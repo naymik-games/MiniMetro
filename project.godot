@@ -1,0 +1,41 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="MiniMetro"
+run/main_scene="uid://6l5goas0ope7"
+config/features=PackedStringArray("4.7", "Mobile")
+config/icon="uid://7t310lgralpi"
+
+[autoload]
+
+SaveManager="*uid://dxho5kiu1f6j8"
+GameSession="*uid://jjqcc33g4x58"
+GameClock="*uid://cc0no026hou7e"
+
+[display]
+
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[global_group]
+
+stations=""
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
+
+[rendering]
+
+rendering_device/driver.windows="d3d12"
+renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true

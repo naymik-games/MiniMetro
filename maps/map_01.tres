@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="GameConfig" format=3 uid="uid://bwxbsxevmi3w7"]
+
+[ext_resource type="Script" uid="uid://58q6otxhw2sj" path="res://scripts/game_config.gd" id="1_7qnne"]
+[ext_resource type="PackedScene" uid="uid://gyvk6lahsxta" path="res://maps/map_1.tscn" id="1_pwfnc"]
+
+[resource]
+script = ExtResource("1_7qnne")
+display_name = "First Map"
+map_scene = ExtResource("1_pwfnc")
+trains_in_reserve = 2
+carriages_in_reserve = 1
+line_upgrades_in_reserve = 0
+station_upgrades_in_reserve = 0
+metadata/_custom_type_script = "uid://58q6otxhw2sj"

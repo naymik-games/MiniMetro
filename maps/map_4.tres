@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="GameConfig" format=3 uid="uid://tg8oxeoodx0e"]
+
+[ext_resource type="PackedScene" uid="uid://oveajfsays5n" path="res://maps/map_4.tscn" id="1_5mgbw"]
+[ext_resource type="Script" uid="uid://58q6otxhw2sj" path="res://scripts/game_config.gd" id="1_tocc5"]
+
+[resource]
+script = ExtResource("1_tocc5")
+display_name = "New York"
+map_scene = ExtResource("1_5mgbw")
+passenger_spawn_aggression = 0.5
+station_upgrades_in_reserve = 0
+metadata/_custom_type_script = "uid://58q6otxhw2sj"

@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://dgt6m1ow6brju"]
+
+[ext_resource type="Script" uid="uid://c6afuhqjkxjmj" path="res://scripts/map.gd" id="1_vffac"]
+
+[node name="map2" type="Node2D" unique_id=1280302547]
+script = ExtResource("1_vffac")
+grid_size = Vector2i(50, 25)
+water_fill = Color(0.3137255, 0.47843137, 0.5647059, 1)
+water_outline = Color(0.29803923, 0.41960785, 0.49803922, 1)
+lake_corner_radius = 12.0
+
+[node name="bg" type="ColorRect" parent="." unique_id=372242093]
+offset_right = 1600.0
+offset_bottom = 800.0
+size_flags_horizontal = 6
+size_flags_vertical = 6
+mouse_filter = 2
+color = Color(0.1882353, 0.1882353, 0.1882353, 1)
+
+[node name="Water" type="Node2D" parent="." unique_id=1119310905]
+
+[node name="Line2D" type="Line2D" parent="Water" unique_id=327879347]
+position = Vector2(560, -64)
+points = PackedVector2Array(1152, 496, 768, 496, 608, 448, 416, 448, 256, 560, -32, 560, -128, 624, -320, 624, -560, 976)
+width = 40.0
+
+[node name="Line2D2" type="Line2D" parent="Water" unique_id=416631231]
+position = Vector2(288, -48)
+points = PackedVector2Array(960, 464, 1120, 240, 1600, -16)
+width = 40.0

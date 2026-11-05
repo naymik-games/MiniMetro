@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://bb8uyki0eyfxx"]
+
+[ext_resource type="Script" uid="uid://bsb3gprrbi34u" path="res://scripts/game.gd" id="1_uwrxv"]
+[ext_resource type="Resource" uid="uid://bwxbsxevmi3w7" path="res://maps/map_01.tres" id="2_lbhrr"]
+[ext_resource type="Texture2D" uid="uid://d2st3ik0hdt" path="res://maps/map_01.png" id="2_lnu2h"]
+[ext_resource type="Script" uid="uid://brlvrdkdfriqk" path="res://scripts/station_spawner.gd" id="2_yqjtg"]
+[ext_resource type="Script" uid="uid://clljbtdyx1h1f" path="res://scripts/map_camera.gd" id="5_iywne"]
+
+[node name="game" type="Node2D" unique_id=1126183867]
+script = ExtResource("1_uwrxv")
+fallback_config = ExtResource("2_lbhrr")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1098304974]
+visible = false
+texture_filter = 1
+custom_minimum_size = Vector2(1152, 640)
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+texture = ExtResource("2_lnu2h")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="Line2D" type="Line2D" parent="." unique_id=322045371]
+width = 6.0
+default_color = Color(0.2322537, 0.58944416, 0.9999967, 1)
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+
+[node name="StationSpawner" type="Node2D" parent="." unique_id=775719674 node_paths=PackedStringArray("line_manager")]
+script = ExtResource("2_yqjtg")
+map_image = ExtResource("2_lnu2h")
+line_manager = NodePath("..")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1112706832]
+position = Vector2(576, 324)
+zoom = Vector2(0.6, 0.6)
+script = ExtResource("5_iywne")
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=1337734782]
+
+[node name="TextureButton" type="TextureButton" parent="." unique_id=1091566536]
+offset_right = 40.0
+offset_bottom = 40.0

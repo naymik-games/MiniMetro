@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://gyvk6lahsxta"]
+
+[ext_resource type="Script" uid="uid://c6afuhqjkxjmj" path="res://scripts/map.gd" id="1_p5fey"]
+
+[node name="map1" type="Node2D" unique_id=1280302547]
+script = ExtResource("1_p5fey")
+bend_radius = 40.0
+
+[node name="bg" type="ColorRect" parent="." unique_id=1232431862]
+offset_right = 1280.0
+offset_bottom = 640.0
+size_flags_horizontal = 6
+size_flags_vertical = 6
+mouse_filter = 2
+color = Color(0.9137255, 0.9137255, 0.9137255, 1)
+
+[node name="Water" type="Node2D" parent="." unique_id=1119310905]
+
+[node name="Line2D" type="Line2D" parent="Water" unique_id=327879347]
+points = PackedVector2Array(1680, 272, 816, 272, 608, 448, 416, 448, -272, 944)
+width = 60.0
+
+[node name="Line2D2" type="Line2D" parent="Water" unique_id=1268482101]
+points = PackedVector2Array(1680, 448, 576, 448)
+width = 60.0
+
+[node name="Polygon2D" type="Polygon2D" parent="Water" unique_id=1842735251]
+polygon = PackedVector2Array(240, 112, 144, 208, 144, 320, -48, 464, -384, 464, -384, -288, 240, -288)

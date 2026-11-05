@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://c53vh71a6q8o5"]
+
+[ext_resource type="Script" uid="uid://btd8vcry5inke" path="res://scripts/metro_line.gd" id="1_r45ny"]
+
+[sub_resource type="Curve2D" id="Curve2D_r45ny"]
+
+[node name="MetroLine" type="Node2D" unique_id=1499706242]
+script = ExtResource("1_r45ny")
+cap_offset = 24.0
+cap_half_length = 12.0
+highlight_width_scale = 1.4
+
+[node name="Line2D" type="Line2D" parent="." unique_id=396688073]
+width = 8.0
+default_color = Color(0.2322537, 0.58944416, 0.9999967, 1)
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+
+[node name="track_path" type="Path2D" parent="." unique_id=2092906295]
+curve = SubResource("Curve2D_r45ny")

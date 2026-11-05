@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="GameConfig" format=3 uid="uid://dylrod5xi0k4e"]
+
+[ext_resource type="PackedScene" uid="uid://b0e7lflbhsd83" path="res://maps/map_3.tscn" id="1_dv3hg"]
+[ext_resource type="Script" uid="uid://58q6otxhw2sj" path="res://scripts/game_config.gd" id="1_x6md2"]
+
+[resource]
+script = ExtResource("1_x6md2")
+display_name = "Wide River"
+map_scene = ExtResource("1_dv3hg")
+passenger_spawn_aggression = 0.8
+first_event_delay = 100.0
+event_gap_min = 65.0
+event_gap_max = 110.0
+trains_in_reserve = 2
+station_upgrades_in_reserve = 0
+station_spawn_aggression = 0.9
+metadata/_custom_type_script = "uid://58q6otxhw2sj"

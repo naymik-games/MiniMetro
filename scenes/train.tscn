@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://d3ejtvnsf4fmt"]
+
+[ext_resource type="Script" uid="uid://dbwr8lglg4ja7" path="res://scripts/train.gd" id="1_d43s7"]
+
+[node name="Train" type="PathFollow2D" unique_id=439027170]
+loop = false
+script = ExtResource("1_d43s7")

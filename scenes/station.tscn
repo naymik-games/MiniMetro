@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://cfs58w7ivwk4p"]
+
+[ext_resource type="Script" uid="uid://c0lvytxsteog7" path="res://scripts/station.gd" id="1_7hcop"]
+[ext_resource type="Texture2D" uid="uid://cq7fqersnqxr3" path="res://assets/shapes/circle-32-solid-black-outline.png" id="1_rod8h"]
+[ext_resource type="Texture2D" uid="uid://bklrqk38gu1dt" path="res://assets/shapes/square-station.png" id="3_fmmug"]
+[ext_resource type="Texture2D" uid="uid://bplwd4a1mt0us" path="res://assets/shapes/triangle-station.png" id="4_g6ujh"]
+[ext_resource type="Texture2D" uid="uid://cu32oe2vb4nob" path="res://assets/shapes/plus-station.png" id="5_h3w3f"]
+[ext_resource type="Texture2D" uid="uid://chg65tg4qddyn" path="res://assets/shapes/hex-station.png" id="6_h3w3f"]
+[ext_resource type="Texture2D" uid="uid://c0ka502gss3na" path="res://assets/shapes/star-station.png" id="7_4y37s"]
+[ext_resource type="Texture2D" uid="uid://6554aj668qst" path="res://assets/shapes/octagon-station.png" id="8_7jr8c"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_g3078"]
+radius = 16.0
+
+[node name="station" type="Area2D" unique_id=732280319 groups=["stations"]]
+script = ExtResource("1_7hcop")
+circle_texture = ExtResource("1_rod8h")
+square_texture = ExtResource("3_fmmug")
+triangle_texture = ExtResource("4_g6ujh")
+plus_texture = ExtResource("5_h3w3f")
+hexagon_texture = ExtResource("6_h3w3f")
+star_texture = ExtResource("7_4y37s")
+octogon_texture = ExtResource("8_7jr8c")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1791562362]
+shape = SubResource("CircleShape2D_g3078")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=523018345]
+z_index = 1
