@@ -85,6 +85,7 @@ var _ghost: LocomotiveGhost = null
 var _station_upgrade_armed: bool = false  ## station upgrade selected, waiting for a station click
 var bridge_budget: int = 0
 var _save_id: String = ""
+var _mode: int = SaveManager.Mode.CLASSIC  ## Classic or Endless, from the home screen
 var _best_before: int = 0     ## this map's high score when the run started (for "New best!")
 var _loaded: bool = false     ## autosave stays off until startup / restore has finished
 
@@ -97,13 +98,14 @@ func _ready() -> void:
 
 	add_to_group("game")
 	_save_id = config.get_save_id()
+	_mode = GameSession.current_mode
 	_best_before = SaveManager.get_high_score(_save_id)
 
 	# The home screen's "Resume" sets this flag. It is consumed here, so reloading
 	# the scene ("Play again") always starts a fresh game.
 	var save: Dictionary = {}
 	if GameSession.resume_requested:
-		save = SaveManager.get_run(_save_id)
+		save = SaveManager.get_run(_save_id, _mode)
 	GameSession.resume_requested = false
 	var resuming := not save.is_empty()
 
@@ -684,8 +686,8 @@ func add_score(points: int = 1) -> void:
 
 ## Called by a station via the "game" group when its ring fills.
 func on_station_overcrowded(_station: Area2D) -> void:
-	if _game_over:
-		return
+	if _game_over or _mode == SaveManager.Mode.ENDLESS:
+		return  # Endless never ends
 	_game_over = true
 	_cancel_upgrade_drag()
 	SaveManager.finish_run(_save_id, score)  # lost game: the save is deleted, the high score stays
@@ -1003,7 +1005,7 @@ func _on_day_started(day: int) -> void:
 func _save_game() -> void:
 	if _game_over or not _loaded:
 		return
-	SaveManager.save_run(_save_id, _build_save())
+	SaveManager.save_run(_save_id, _build_save(), _mode)
 
 
 ## Everything needed to rebuild the run. Only plain numbers / strings / arrays / dictionaries

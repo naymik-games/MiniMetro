@@ -66,8 +66,12 @@ func _process(real_delta: float) -> void:
 	if needs_redraw:
 		queue_redraw()
 	if overcrowd_progress >= 1.0:
-		_failed = true
-		get_tree().call_group("game", "on_station_overcrowded", self)
+		if GameSession.is_endless():
+			# Endless: the ring stays full and red, but the game goes on.
+			overcrowd_progress = 1.0
+		else:
+			_failed = true
+			get_tree().call_group("game", "on_station_overcrowded", self)
 
 
 # ------------------------------------------------------------------ spawning
@@ -168,7 +172,8 @@ func get_save_data() -> Dictionary:
 ## Call after the station is in the tree and its shape is set.
 func apply_save_data(d: Dictionary) -> void:
 	_spawn_progress = float(d.get("spawn_progress", 0.0))
-	overcrowd_progress = clampf(float(d.get("overcrowd", 0.0)), 0.0, 0.99)
+	# Classic never saves a full ring (that would be game over). Endless can.
+	overcrowd_progress = clampf(float(d.get("overcrowd", 0.0)), 0.0, 1.0 if GameSession.is_endless() else 0.99)
 	if d.get("upgraded", false):
 		upgraded = true
 		sprite_2d.scale = _base_sprite_scale * upgraded_scale

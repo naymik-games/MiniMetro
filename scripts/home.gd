@@ -9,21 +9,29 @@ const CARD_WIDTH := 230.0
 const CARD_GAP := 18.0
 const MAX_ROW_WIDTH := 900.0
 
+const MODE_NAMES: Array[String] = ["Classic", "Endless"]
+const MODE_BLURBS: Array[String] = [
+	"The game ends when a station overcrowds. High scores count.",
+	"No game over. Play as long as you like. No high scores.",
+]
+
 var _ui: Control
+var _mode: int = SaveManager.Mode.CLASSIC
 var _pending_new: GameConfig
 var _confirm_new: ConfirmationDialog
 var _confirm_clear: ConfirmationDialog
 
 
 func _ready() -> void:
+	_mode = SaveManager.get_last_mode()
+
 	_confirm_new = ConfirmationDialog.new()
-	_confirm_new.dialog_text = "Start a new game on this map?\nYour saved progress will be lost."
 	_confirm_new.ok_button_text = "Start new"
-	_confirm_new.confirmed.connect(func(): GameSession.start_game(_pending_new, false))
+	_confirm_new.confirmed.connect(func(): GameSession.start_game(_pending_new, _mode, false))
 	add_child(_confirm_new)
 
 	_confirm_clear = ConfirmationDialog.new()
-	_confirm_clear.dialog_text = "Delete ALL saved games and high scores?\nThis can't be undone."
+	_confirm_clear.dialog_text = "Delete ALL saved games (Classic and Endless) and high scores?\nThis can't be undone."
 	_confirm_clear.ok_button_text = "Delete everything"
 	_confirm_clear.confirmed.connect(func():
 		SaveManager.clear_all()
@@ -51,7 +59,8 @@ func _build_ui() -> void:
 	panel.add_child(box)
 
 	box.add_child(UIStyle.label("Select a Map", 30))
-	box.add_child(UIStyle.label("Choose where to play", 16, Color(UIStyle.INK, 0.65)))
+	box.add_child(_build_mode_toggle())
+	box.add_child(UIStyle.label(MODE_BLURBS[_mode], 16, Color(UIStyle.INK, 0.65)))
 
 	var cards: Array[Control] = []
 	for config in configs:
@@ -82,41 +91,97 @@ func _build_ui() -> void:
 	box.add_child(clear)
 
 
+# ------------------------------------------------------------ mode toggle
+
+func _build_mode_toggle() -> Control:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	for m in [SaveManager.Mode.CLASSIC, SaveManager.Mode.ENDLESS]:
+		var style := &"primary" if m == _mode else &"light"
+		var tab := UIStyle.button(MODE_NAMES[m], style, Vector2(150, 44))
+		tab.pressed.connect(_on_mode_selected.bind(m))
+		# Dot = this mode has a saved game on at least one map.
+		if SaveManager.has_any_run(m):
+			tab.add_child(_make_save_dot())
+		row.add_child(tab)
+	return row
+
+
+func _make_save_dot() -> Control:
+	var dot := Panel.new()
+	dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = UIStyle.GOLD
+	sb.border_color = UIStyle.PAPER
+	sb.set_border_width_all(2)
+	sb.set_corner_radius_all(8)
+	dot.add_theme_stylebox_override("panel", sb)
+	dot.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	dot.offset_left = -20.0
+	dot.offset_right = -6.0
+	dot.offset_top = 6.0
+	dot.offset_bottom = 20.0
+	return dot
+
+
+func _on_mode_selected(mode: int) -> void:
+	if mode == _mode:
+		return
+	_mode = mode
+	SaveManager.set_last_mode(mode)
+	_build_ui()
+
+
+# ------------------------------------------------------------------ cards
+
+func _week_of(run: Dictionary) -> int:
+	return floori(int(run.get("day", 0)) / float(GameClock.DAYS_PER_WEEK)) + 1
+
+
 func _build_map_card(config: GameConfig) -> Control:
 	var id := config.get_save_id()
-	var run := SaveManager.get_run(id)
-	var best := SaveManager.get_high_score(id)
+	var run := SaveManager.get_run(id, _mode)
 
 	var card := UIStyle.make_card(Vector2(CARD_WIDTH, 0), 10)
 	var col := UIStyle.card_body(card)
 
-	# Name on the left, best score as a badge on the right.
-	var best_badge := UIStyle.badge("Best %d" % best, UIStyle.GOLD if best > 0 else UIStyle.BADGE_GREY)
-	col.add_child(UIStyle.card_header(config.display_name, best_badge))
+	# Name on the left. Classic: best score badge. Endless has no high scores.
+	var badge: Control
+	if _mode == SaveManager.Mode.ENDLESS:
+		badge = UIStyle.badge("∞", UIStyle.BADGE_GREY)
+	else:
+		var best := SaveManager.get_high_score(id)
+		badge = UIStyle.badge("Best %d" % best, UIStyle.GOLD if best > 0 else UIStyle.BADGE_GREY)
+	col.add_child(UIStyle.card_header(config.display_name, badge))
 
 	var info_text := "No saved game"
 	if not run.is_empty():
-		var week := floori(int(run.get("day", 0)) / float(GameClock.DAYS_PER_WEEK)) + 1
-		info_text = "Week %d\n%d delivered" % [week, int(run.get("score", 0))]
+		info_text = "Week %d\n%d delivered" % [_week_of(run), int(run.get("score", 0))]
 	var info := UIStyle.label(info_text, 15, Color(UIStyle.INK, 0.8), false)
 	info.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	col.add_child(info)
 
 	if not run.is_empty():
 		var resume := UIStyle.button("Resume", &"primary")
-		resume.pressed.connect(GameSession.start_game.bind(config, true))
+		resume.pressed.connect(GameSession.start_game.bind(config, _mode, true))
 		col.add_child(resume)
 
 	var play_new := UIStyle.button("Play New", &"light")
-	play_new.pressed.connect(_on_play_new.bind(config, not run.is_empty()))
+	play_new.pressed.connect(_on_play_new.bind(config, run))
 	col.add_child(play_new)
 
 	return card
 
 
-func _on_play_new(config: GameConfig, has_save: bool) -> void:
-	if has_save:
-		_pending_new = config
-		_confirm_new.popup_centered()  # don't silently throw a saved game away
+func _on_play_new(config: GameConfig, run: Dictionary) -> void:
+	if run.is_empty():
+		GameSession.start_game(config, _mode, false)
+		return
+	# Don't silently throw a saved game away. Endless runs can be long, so say how far it got.
+	_pending_new = config
+	if _mode == SaveManager.Mode.ENDLESS:
+		_confirm_new.dialog_text = "Start a new Endless game on this map?\nYour saved run (Week %d, %d delivered) will be lost." % [_week_of(run), int(run.get("score", 0))]
 	else:
-		GameSession.start_game(config, false)
+		_confirm_new.dialog_text = "Start a new game on this map?\nYour saved progress will be lost."
+	_confirm_new.popup_centered()
